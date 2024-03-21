@@ -1,0 +1,18 @@
+{
+  "name": "12-challenge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "inquire.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.11.3",
+    "inquirer": "^8.2.4"
+  }
+}
