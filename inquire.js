@@ -186,10 +186,11 @@ function addEmployee() {
 }
 
 function updateEmployeeRole() {
-    let sql = `SELECT first_name, last_name FROM employee`;
+    let sql = `SELECT id, first_name, last_name FROM employee`;
     pool.query(sql, (err, {rows}) => {
         if (err) {
-            console.log(err)
+            console.log(err);
+            return;
         } 
         console.log(rows)
         let employeeNames = []
