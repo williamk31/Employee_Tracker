@@ -186,22 +186,25 @@ function addEmployee() {
 }
 
 function updateEmployeeRole() {
-    let sql = `SELECT id, first_name, last_name FROM employee`;
-    pool.query(sql, (err, {rows}) => {
+    let employeeSql = `SELECT id, first_name, last_name FROM employee`;
+    pool.query(employeeSql, (err, result) => {
         if (err) {
             console.log(err);
             return;
         } 
-        console.log(rows)
-        let employeeNames = []
-        rows.forEach((employee) => employeeNames.push(`${employee.first_name} ${employee.last_name}`));
-        let sql = `SELECT id, title FROM role`;
-        pool.query(sql, (err, {rows}) => {
+        console.log(result);
+        let employees = result.rows;
+        console.log(employees);
+        let employeeNames = employees.map(employee => `${employee.first_name} ${employee.last_name}`);
+
+        let roleSql = `SELECT id, title FROM role`;
+        pool.query(roleSql, (err, result) => {
         if (err) {
-            console.log(err)
+            console.log(err);
+            return;
         }
-        let rolesArray = []
-        rows.forEach((role) => rolesArray.push(`${role.title}`));
+        let roles = result.rows;
+        let rolesArray = roles.map(role => role.title);
    
     inquirer.prompt([
         {
@@ -220,13 +223,13 @@ function updateEmployeeRole() {
         .then(function(data){
             
             let newRoleID;
-            rows.forEach((role) => {
+            roles.forEach((role) => {
                 if(data.roles === role.title){
                     newRoleID = role.id
                 }
             })
             let employeeID;
-            rows.forEach((employee) => {
+            employees.forEach((employee) => {
                 if(data.employees === `${employee.first_name} ${employee.last_name}`){
                     employeeID = employee.id
                 }
@@ -236,7 +239,7 @@ function updateEmployeeRole() {
                 if (err) {
                     console.log(err);
                 }
-                console.log(rows);
+                console.log(`Employee's role updated succesfully!`)
             });
         })
     });
