@@ -110,9 +110,15 @@ function addDepartment() {
 
 }
     
-    
-
 function addRole() {
+    let departmentSql = `SELECT id, name FROM department`;
+    pool.query(departmentSql, (err, result) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        let departments = result.rows;
+        let departmentsArray = departments.map(department => department.name)
     inquirer.prompt([
         {
             type: 'input',
@@ -125,24 +131,27 @@ function addRole() {
             name: 'salary'
         },
         {
-            type: 'input',
-            message: 'Department ID',
-            name: 'department'
+            type: 'list',
+            choices: departmentsArray,
+            message: 'What department does this role belong to?',
+            name: 'chosenDepartment'
         }
     ])
         .then(function(data){ 
-            console.log(data.role)
+            let selectedDepartment = departments.find(department => data.chosenDepartment === department.name)
+    
             const sql = `INSERT INTO role (title, salary, department) VALUES ($1, $2, $3)`
             let roleName = data.role
             let roleSalary = data.salary
-            let roleDepartment = data.department
-            pool.query(sql, [roleName, roleSalary, roleDepartment], (err, result) => {
+            pool.query(sql, [roleName, roleSalary, selectedDepartment.id], (err, result) => {
                 if (err) {
-            console.log(err);
-            }
+                    console.log(err);
+                    return;
+                 }
           console.log(`${data.role} succesfully added to Roles!`);
             })
         })
+    })
 
 }
 
