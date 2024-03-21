@@ -138,7 +138,7 @@ function addRole() {
         }
     ])
         .then(function(data){ 
-            let selectedDepartment = departments.find(department => data.chosenDepartment === department.name)
+            let selectedDepartment = departments.find(department => data.chosenDepartment === department.name);
     
             const sql = `INSERT INTO role (title, salary, department) VALUES ($1, $2, $3)`
             let roleName = data.role
@@ -156,6 +156,23 @@ function addRole() {
 }
 
 function addEmployee() {
+    let roleSql = `SELECT id, title FROM role`;
+    pool.query(roleSql, (err, result) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        let roles = result.rows;
+        let rolesArray = roles.map(role => role.title);
+        let employeeSql = `SELECT id, first_name, last_name FROM employee`;
+        pool.query(employeeSql, (err, result) => {
+            if (err) {
+                console.log(err);
+                return;
+            } 
+            console.log(result);
+            let employees = result.rows;
+            let employeeNames = employees.map(employee => `${employee.first_name} ${employee.last_name}`);
     inquirer.prompt([
         {
             type: 'input',
@@ -168,29 +185,33 @@ function addEmployee() {
             name: 'lastName'
         },
         {
-            type: 'input',
-            message: 'Role ID',
-            name: 'roleID'
+            type: 'list',
+            choices: rolesArray,
+            message: 'What is this employees role?',
+            name: 'role'
         },
         {
-            type: 'input',
-            message: 'Manager ID',
-            name: 'managerID'
+            type: 'list',
+            choices: employeeNames,
+            message: 'Who is their manager?',
+            name: 'manager'
         }
     ])
         .then(function(data){ 
-            const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)`
+            let selectedRole = roles.find(role => data.role === role.title);
+            let selectedManager = employees.find(employee => data.manager === `${employee.first_name} ${employee.last_name}`);
             let firstName = data.firstName;
             let lastName = data.lastName;
-            let roleID = data.roleID;
-            let managerID = data.managerID;
-            pool.query(sql, [firstName, lastName, roleID, managerID], (err, result) => {
+            const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)`
+            pool.query(sql, [firstName, lastName, selectedRole.id, selectedManager.id], (err, result) => {
                 if (err) {
             console.log(err);
             }
           console.log(`${firstName} ${lastName} succesfully added to Employees`);
             })
         })
+    });
+    });
 
 }
 
@@ -203,7 +224,6 @@ function updateEmployeeRole() {
         } 
         console.log(result);
         let employees = result.rows;
-        console.log(employees);
         let employeeNames = employees.map(employee => `${employee.first_name} ${employee.last_name}`);
 
         let roleSql = `SELECT id, title FROM role`;
