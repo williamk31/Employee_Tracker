@@ -71,7 +71,7 @@ function viewAllDepartments() {
 }
 
 function viewAllRoles() {
-    const sql = `SELECT * FROM role`
+    const sql = `SELECT role.id, role.title, role.salary, department.name AS department FROM role LEFT JOIN department ON role.department = department.id`
     pool.query(sql, (err, { rows }) => {
         if (err) {
             console.log(err);
