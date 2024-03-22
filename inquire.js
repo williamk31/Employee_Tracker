@@ -1,6 +1,5 @@
 const inquirer = require('inquirer');
 const { Pool } = require('pg');
-const { start } = require('repl');
 
 const pool = new Pool(
     {
@@ -50,7 +49,9 @@ function response(data) {
             updateEmployeeRole();
             break;
         case 'Quit':
-            return;
+            pool.end();
+            process.exit(0)
+            break;
     }
 }
 
@@ -69,7 +70,6 @@ function viewAllDepartments() {
         console.table(rows);
         startProgram();
     });
-
 };
 
 function viewAllRoles() {
@@ -111,10 +111,7 @@ function addDepartment() {
                 console.log(`${data.department} succesfully added to Departments`);
                 viewAllDepartments();
             });
-
         })
-
-
 }
 
 function addRole() {
@@ -222,8 +219,7 @@ function addEmployee() {
                 })
         });
     });
-
-}
+};
 
 function updateEmployeeRole() {
     let employeeSql = `SELECT id, first_name, last_name FROM employee`;
@@ -280,11 +276,9 @@ function updateEmployeeRole() {
                         console.log(`Employee's role updated succesfully!`);
                         viewAllEmployees();
                     });
-
                 })
         });
     });
-}
-
+};
 
 module.exports = startProgram;
