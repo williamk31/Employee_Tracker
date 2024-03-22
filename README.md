@@ -22,7 +22,7 @@ node server.js
   
 ## Usage
 Follow the prompts in the command line to view all departments, view all roles, view all employees, add a department, add a role, add an employee, or update an employee role. The following video shows the application in use:
-[Walkthrough Video](walkthrough.url)
+[Walkthrough Video](https://drive.google.com/file/d/1EShWiEKUvLgYICNJuOwXsilzjspOfjvC/view)
   
 ## Contributing
 To contribute more, please contact me.
